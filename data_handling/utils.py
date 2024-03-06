@@ -1,6 +1,8 @@
 import os
 from params import LOCAL_DATA_PATH
 from pathlib import Path
+from google.cloud import storage
+from tqdm.std import tqdm
 
 def create_folder_structure(plate_number):
         """
