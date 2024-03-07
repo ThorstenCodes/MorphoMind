@@ -11,3 +11,4 @@ __pycache__/
 data_handling/.DS_Store
 data_handling/__pycache__/params.cpython-310.pyc
 data_handling/__pycache__/utils.cpython-310.pyc
+processed_images/
