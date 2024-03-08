@@ -1,0 +1,9 @@
+google-api-core
+google-auth
+google-auth-oauthlib
+google-cloud-bigquery
+google-cloud-bigquery-storage
+google-cloud-core
+google-cloud-storage
+pandas
+tqdm

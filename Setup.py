@@ -5,8 +5,8 @@ with open("requirements.txt") as f:
     content = f.readlines()
 requirements = [x.strip() for x in content if "git+" not in x]
 
-setup(name='MorphoMind',
-      version="0.0.0",
+setup(name='morphormind',
+      version="0.0.1",
       description="Code to automatically identify features from CellPaint pictures",
       license="MIT",
       author="Thorsten Kaltenbacher, Pepe Araya, Antonia Luetz",
