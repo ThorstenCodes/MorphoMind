@@ -80,5 +80,3 @@ def big_query_write(
     client = bigquery.Client()
     job_config = bigquery.LoadJobConfig(write_disposition=write_mode)
     job = client.load_table_from_dataframe(data, full_table_name, job_config=job_config)
-
-    print('✅ Data uploaded to Big Query!')

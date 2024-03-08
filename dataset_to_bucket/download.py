@@ -5,20 +5,16 @@ from pathlib import Path
 from tqdm.std import tqdm
 import shutil
 from google.cloud import storage
+import tarfile
 
 LOCAL_DATA_PATH = os.path.join(os.path.expanduser('~'), ".morpho_minds_data")
 BUCKET_NAME = 'cell_profiles_morpho_minds'
 
-
-# PLATES = [
-#     24302, 24585, 24639, 24774, 25576, 25689, 25935, 26166, 26545, 26672,
-#     26794, 26203, 25911, 25572, 24750, 24564, 24277, 24644, 24792, 26576
-# ]
-
 PLATES = [
-    24639, 24774, 25576, 25689, 25935, 26166, 26545, 26672,
+    24302, 24585, 24639, 24774, 25576, 25689, 25935, 26166, 26545, 26672,
     26794, 26203, 25911, 25572, 24750, 24564, 24277, 24644, 24792, 26576
 ]
+
 
 CHANNELS = [
     'Hoechst', 'ERSyto', 'ERSytoBleed', 'Ph_golgi', 'Mito'
@@ -65,15 +61,17 @@ def download_dataset(url, plate_number):
 def unzip_dataset(plate_number):
 # Unzip the file
     print('Unzipping...')
-    zip_file_path = Path(LOCAL_DATA_PATH).joinpath(str(plate_number), 'raw', f'Plate_{plate_number}.tar.gz')
-    if not zip_file_path.exists():
+    file_path = Path(LOCAL_DATA_PATH).joinpath(str(plate_number), 'raw', f'Plate_{plate_number}.tar.gz')
+    uncompressed_dir = Path(LOCAL_DATA_PATH).joinpath(str(plate_number), 'raw', 'temp')
+    if not file_path.exists():
         print('File does not exist')
-    zip_uncompressed_dir = Path(LOCAL_DATA_PATH).joinpath(str(plate_number), 'raw', 'temp')
-    z = zipfile.ZipFile(zip_file_path)
-    z.extractall(zip_uncompressed_dir)
-    print(f"Unzipped to {zip_uncompressed_dir}")
 
-    files_path = zip_uncompressed_dir.joinpath('gigascience_upload', f'Plate_{plate_number}')
+    tar = tarfile.open(file_path, "r:gz",)
+    tar.extractall(uncompressed_dir)
+    tar.close()
+    print(f"Unzipped to {uncompressed_dir}")
+
+    files_path = uncompressed_dir.joinpath('gigascience_upload', f'Plate_{plate_number}')
     sqlite_path = files_path.joinpath('extracted_features', f'{plate_number}.sqlite')
     profiles_path = files_path.joinpath('profiles', 'mean_well_profiles.csv')
     save_path = Path(LOCAL_DATA_PATH).joinpath(str(plate_number), 'raw')
@@ -81,8 +79,8 @@ def unzip_dataset(plate_number):
     shutil.move(sqlite_path, save_path)
     shutil.move(profiles_path, save_path)
     print("Deleting temp files...")
-    shutil.rmtree(zip_uncompressed_dir)
-    os.remove(zip_file_path)
+    shutil.rmtree(uncompressed_dir)
+    os.remove(file_path)
     print("Done.")
 
 def download_pictures(urls, plate_number):
@@ -153,10 +151,12 @@ def upload_folder_to_bucket(bucket_name, source_folder_path, plate_number):
     except Exception as e:
         print(f"Failed to upload {source_folder_path} to {bucket_name}: {e}")
 
-for i, plate in enumerate(PLATES):
-    create_folder_structure(f'{plate}')
+# for i, plate in enumerate(PLATES):
+#    create_folder_structure(f'{plate}')
 #    download_dataset(preprocessed_data_urls[i], plate)
-#    unzip_dataset(plate)
-    download_pictures(pictures_urls[plate], plate)
-    unzip_pictures(plate)
-    upload_folder_to_bucket(BUCKET_NAME, Path(LOCAL_DATA_PATH).joinpath(str(plate)), plate)
+    # unzip_dataset(plate)
+#    download_pictures(pictures_urls[plate], plate)
+#    unzip_pictures(plate)
+#    upload_folder_to_bucket(BUCKET_NAME, Path(LOCAL_DATA_PATH).joinpath(str(plate)), plate)
+
+upload_folder_to_bucket(BUCKET_NAME, Path(LOCAL_DATA_PATH).joinpath(str(24277)), '24277')
