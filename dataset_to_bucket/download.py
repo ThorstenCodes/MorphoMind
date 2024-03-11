@@ -12,7 +12,7 @@ BUCKET_NAME = 'cell_profiles_morpho_minds'
 
 PLATES = [
     24302, 24585, 24639, 24774, 25576, 25689, 25935, 26166, 26545, 26672,
-    26794, 26203, 25911, 25572, 24750, 24564, 24277, 24644, 24792, 26576
+    24277, 24564, 24644, 24750, 25572, 25911, 26203, 26794, 24792, 26576
 ]
 
 
@@ -76,8 +76,8 @@ def unzip_dataset(plate_number):
     profiles_path = files_path.joinpath('profiles', 'mean_well_profiles.csv')
     save_path = Path(LOCAL_DATA_PATH).joinpath(str(plate_number), 'raw')
     print(f"Moving files...")
-    shutil.move(sqlite_path, save_path)
-    shutil.move(profiles_path, save_path)
+    shutil.move(str(sqlite_path), str(save_path))
+    shutil.move(str(profiles_path), str(save_path))
     print("Deleting temp files...")
     shutil.rmtree(uncompressed_dir)
     os.remove(file_path)
@@ -151,12 +151,13 @@ def upload_folder_to_bucket(bucket_name, source_folder_path, plate_number):
     except Exception as e:
         print(f"Failed to upload {source_folder_path} to {bucket_name}: {e}")
 
-# for i, plate in enumerate(PLATES):
+for i, plate in enumerate(PLATES):
 #    create_folder_structure(f'{plate}')
-#    download_dataset(preprocessed_data_urls[i], plate)
+   download_dataset(preprocessed_data_urls[i], plate)
     # unzip_dataset(plate)
 #    download_pictures(pictures_urls[plate], plate)
 #    unzip_pictures(plate)
 #    upload_folder_to_bucket(BUCKET_NAME, Path(LOCAL_DATA_PATH).joinpath(str(plate)), plate)
-
-upload_folder_to_bucket(BUCKET_NAME, Path(LOCAL_DATA_PATH).joinpath(str(24277)), '24277')
+#for var in PLATES:
+#  unzip_dataset(var)
+#  upload_folder_to_bucket(BUCKET_NAME, Path(LOCAL_DATA_PATH).joinpath(str(var)), f'{var}')
