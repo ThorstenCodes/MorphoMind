@@ -75,7 +75,7 @@ def big_query_write(
     Write the data to Big Query.
     """
     client = bigquery.Client(project=gcp_project)
-    write_mode = "WRITE_TRUNCATE"
+    write_mode = "WRITE_APPEND"
 
     client = bigquery.Client()
     job_config = bigquery.LoadJobConfig(write_disposition=write_mode)

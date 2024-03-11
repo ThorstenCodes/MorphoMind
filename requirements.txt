@@ -7,3 +7,4 @@ google-cloud-core
 google-cloud-storage
 pandas
 tqdm
+pyarrow
