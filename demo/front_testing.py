@@ -19,7 +19,7 @@ def process_image(image):
 # Function to send image to FastAPI for processing
 def predict_image(image_np):
 
-    url = "http://localhost:8080/predict_number/"
+    url = "https://morpho-minds-predictor-api-s6ijqaeqvq-ey.a.run.app/predict_number"
     payload = {"image_np": image_np}
     response = requests.post(url, json=payload)
     predictions = response.json()["predictions"]

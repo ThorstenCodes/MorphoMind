@@ -12,7 +12,7 @@ from tensorflow.keras import models
 
 
 app = FastAPI()
-app.state.model = models.load_model('testing_model_numbers.keras')
+app.state.model = models.load_model('final_model.keras')
 # Allowing all middleware is optional, but good practice for dev purposes
 app.add_middleware(
     CORSMiddleware,
