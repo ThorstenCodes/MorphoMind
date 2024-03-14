@@ -57,7 +57,8 @@ h2, h3, h4, h5, h6, p {
     color: black; /* Text color */
 }
 .stButton > button {
-    background-color: white !important;
+    background-color: transparent !important;
+    color: white;
 }
 .stButton p {
     color: black; /* Text color */
