@@ -9,27 +9,27 @@ import time
 st.set_page_config(page_title='Morpho Minds',
                    page_icon='microbe')
 
-# def img_to_base64_str(file_path):
-#     """Reads an image file and converts it into a base64 string."""
-#     with open(file_path, "rb") as img_file:
-#         return base64.b64encode(img_file.read()).decode('utf-8')
+def img_to_base64_str(file_path):
+    """Reads an image file and converts it into a base64 string."""
+    with open(file_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode('utf-8')
 
-# #Function to set the background image using the base64 string
-# def set_bg_img_from_local(file_path):
-#     """Sets a background image from a local file by converting it to base64."""
-#     bin_str = img_to_base64_str(file_path)
-#     bg_img_style = f"""
-#     <style>
-#     .stApp {{
-#         background-image: url("data:image/jpeg;base64,{bin_str}");
-#         background-size: cover;
-#     }}
-#     </style>
-#     """
-#     st.markdown(bg_img_style, unsafe_allow_html=True)
+#Function to set the background image using the base64 string
+def set_bg_img_from_local(file_path):
+    """Sets a background image from a local file by converting it to base64."""
+    bin_str = img_to_base64_str(file_path)
+    bg_img_style = f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/jpeg;base64,{bin_str}");
+        background-size: cover;
+    }}
+    </style>
+    """
+    st.markdown(bg_img_style, unsafe_allow_html=True)
 
-# # Use the function with the path to your local JPG image
-# #set_bg_img_from_local('/Users/pepe/code/projects/MorphoMind/demo/national-cancer-institute-L7en7Lb-Ovc-unsplash.jpg')
+#Use the function with the path to your local JPG image
+set_bg_img_from_local('/Users/pepe/code/projects/MorphoMind/demo/national-cancer-institute-L7en7Lb-Ovc-unsplash.jpg')
 
 # st.markdown("""
 # <style>
