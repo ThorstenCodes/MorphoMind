@@ -77,7 +77,6 @@ st.set_page_config(page_title='Morpho Minds',
 # """, unsafe_allow_html=True)
 
 
-
 # Function to convert image to numpy array and resize it
 def process_single_image(image):
     image = image.resize((224, 224))  # Resize image to required size
@@ -131,7 +130,7 @@ files = st.file_uploader('Upload files (.tif)',accept_multiple_files=True)
 st.markdown("""
 <style>
 .big-font {
-    font-size:40px !important;
+    font-size:40px;
 }
 </style>
 """, unsafe_allow_html=True)
