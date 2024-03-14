@@ -134,7 +134,7 @@ files = st.file_uploader('Upload files (.tif)',accept_multiple_files=True)
 st.markdown("""
 <style>
 .big-font {
-    font-size:40px;
+    font-size:30px;
 }
 </style>
 """, unsafe_allow_html=True)
