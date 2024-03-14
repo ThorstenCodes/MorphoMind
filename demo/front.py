@@ -77,6 +77,10 @@ h2, h3, h4, h5, h6, p {
 .stFileUploader > label > div > p > div > label {
     font-size: 18px; /* Font size */
 }
+.uploadedFileData {
+    background-color: white !important;
+    color: black !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
