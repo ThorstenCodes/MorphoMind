@@ -57,14 +57,13 @@ h2, h3, h4, h5, h6, p {
     color: black; /* Text color */
 }
 .stButton > button {
-    background-color: transparent !important;
-    color: white;
+    background-color: white !important;
 }
-.stButton p {
-    color: black; /* Text color */
+.stButton > button > div > label,
+.stButton > button > div > label > p,
+.stButton > button > div > p {
+    color: black !important; /* Ensure the text color is black */
 }
-
-
 .stSelectbox > label > div > p {
     font-size: 18px; /* Font size */
 }
