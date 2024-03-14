@@ -3,6 +3,8 @@ import numpy as np
 import requests
 from PIL import Image
 import base64
+from tensorflow.keras.utils import load_img, img_to_array
+
 
 st.set_page_config(page_title='Morpho Minds',
                    page_icon='microbe')
@@ -29,41 +31,99 @@ def set_bg_img_from_local(file_path):
 # Use the function with the path to your local JPG image
 set_bg_img_from_local('/Users/thorsten/code/ThorstenCodes/MorphoMind/demo/national-cancer-institute-L7en7Lb-Ovc-unsplash.jpg')
 
-# Customize color of text
 st.markdown("""
 <style>
 body {
     color: #ffffff; /* Change all text to white */
 }
 
-h1, h2, h3, h4, h5, h6, p {
+p {
+    font-size: 20px;
+}
+h1 {
     color: #ffffff !important; /* Make sure headers and paragraphs are included */
+    font-size: 65px;
 }
-.streamlit-expanderHeader {
-    background-color: white;
-    color: grey; # Adjust this for expander header color
+
+h2, h3, h4, h5, h6, p {
+    color: #ffffff !important; /* Make sure headers and paragraphs are included */
+    font-size: 18px;
 }
-.streamlit-expanderContent {
-    background-color: white;
-    color: black; # Expander content color
+
+/* Customize selectbox */
+.stSelectbox > div {
+    background-color: #f0f2f6; /* Background color */
+    color: black; /* Text color */
+}
+
+.stSelectbox > label > div > p {
+    font-size: 18px; /* Font size */
+}
+
+/* Customize text input */
+.stTextInput > label > div > p {
+    font-size: 18px; /* Font size */
+}
+
+/* Customize file uploader */
+.stFileUploader > label > div > p > div > label {
+    font-size: 18px; /* Font size */
 }
 </style>
 """, unsafe_allow_html=True)
 
 
-def convert_image(image):
-    image = image.resize((224, 224), Image.Resampling.NEAREST)
-    image_array = np.array(image)
-    return image_array
 
-def request_number_prediction(img_array):
-    params = {
-        'image': img_array.tolist()
-    }
+# Function to convert image to numpy array and resize it
+def process_single_image(image):
+    image = image.resize((224, 224))  # Resize image to required size
+    image_np = np.array(image)
+    return image_np.tolist()
 
-    response = requests.get('https://taxifare-s6ijqaeqvq-ew.a.run.app/predict', params=params)
+def process_multi_images(files):
+    # preprocessed_images = []
+    # for file in files:
+    #     img = load_img(file, target_size=(224, 224), color_mode='grayscale')
+    #     img_array = img_to_array(img)
+    #     img_array_expanded = np.expand_dims(img_array, axis=0)
+    #     preprocessed_images.append(img_array_expanded)
+    # image_tensor = np.concatenate(preprocessed_images, axis=0)
+    # return image_tensor.tolist()
+    preprocessed_images = []
+    for file in files:
+        try:
+            img = Image.open(file)
+            img = img.resize((224, 224))  # Resize image as per your requirement
+            img_array = np.array(img)
+            img_array_expanded = np.expand_dims(img_array, axis=0)
+            preprocessed_images.append(img_array_expanded)
+        except Exception as e:
+            st.error(f"Error processing file {file.name}: {e}")
+            continue
 
-    return response
+    if len(preprocessed_images) > 0:
+        image_tensor = np.concatenate(preprocessed_images, axis=0)
+        return image_tensor.tolist()
+    else:
+        st.error("No images could be processed.")
+        return None
+
+# Function to send image to FastAPI for processing
+def predict_image_cell_number(image_np):
+
+    url = "http://localhost:8000/predict_number/"
+    payload = {"image_np": image_np}
+    response = requests.post(url, json=payload)
+    predictions_number = response.json()["predictions_number"]
+    return predictions_number
+
+def predict_image_area(image_tensor):
+    url = "http://localhost:8000/predict_area/"
+    payload = {"image_tensor": image_tensor}
+    response = requests.post(url, json=payload)
+    predictions_area = response.json()["predictions_area"]
+    print(predictions_area)
+    return predictions_area
 
 def transform_unit_for_area(image_array, width, height):
     x = image_array.shape[0]
@@ -78,13 +138,13 @@ url = 'https://taxifare-s6ijqaeqvq-ew.a.run.app/predict'
 
 st.title("Morpho Minds")
 
-st.write('Predicting cell morphology from pictures.')
+st.write('This AI tool allows you to upload TIFF images to determine the cell number or cell area on the image. The cell number and area are predicted by Deep Learning Models which have been trained on the xxx dataset. Have fun predicting from your pictures.')
 
-choice = st.selectbox('Select what you want to determine:', ['Cell Number', 'Cell Area', 'Cell Number & Cell Area'])
+choice = st.selectbox('Select what you want to determine:', ['Cell Number', 'Cell Area'])
 
 # Ask the user to input the resolution in 'width x height' format
-resolution_input = st.text_input("Enter the resolution in 'width x height' format (e.g., 500 x 400):")
-unit = st.selectbox("Select the unit of measurement:",
+resolution_input = st.text_input("Enter the resolution of your image:", placeholder= "e.g.: pixel/unit x pixel/unit")
+unit = st.selectbox("Select the unit of resolution:",
                     ('micrometers (µm)', 'nanometers (nm)', 'millimeters (mm)'))
 
 try:
@@ -100,41 +160,28 @@ except ValueError:
 # Now, 'width' and 'height' are stored as integers and can be used for further processing
 
 
-file = st.file_uploader('Upload a picture of cells',)
+files = st.file_uploader('Upload files (.tif)',accept_multiple_files=True)
 
-if file is not None:
-    image = Image.open(file)
-    img_array = convert_image(image)
-    response = request_number_prediction(img_array)
 
-    if response.status_code == 200:
-        data = response.json()  # This line is moved up here to ensure `data` is defined before you check conditions
+
+if files:
+    if len(files) == 1:
+        image = Image.open(files[0])
+        img_array = process_single_image(image)
+    else:
+        img_array = process_multi_images(files)
 
         if choice == 'Cell Number':
-            cell_number = data.get("cell_number", "N/A")  # Provide a default value in case the key doesn't exist
+            predictions = predict_image_cell_number(img_array)
+            cell_number = predictions.get("predictions_number")
             st.markdown(f"Your uploaded image contains {cell_number} cells.", unsafe_allow_html=True)
 
         elif choice == 'Cell Area':
-            cell_area = data.get("cell_area", "N/A")  # Provide a default value
+            predictions = predict_image_area(img_array)
+            cell_area = predictions.get("predictions_area")
             if resolution_input == True:
                 st.markdown(f"{transform_unit_for_area} square {unit} of your image are covered with cells.")
             else:
                 st.markdown(f"{cell_area} square pixel of your image are covered with cells.", unsafe_allow_html=True)
-
-        elif choice == 'Cell Number & Cell Area':
-            cell_number = data.get("cell_number", "N/A")
-            cell_area = data.get("cell_area", "N/A")
-            st.markdown(f"Your uploaded image contains {cell_number} cells.", unsafe_allow_html=True)
-            if resolution_input == True:
-                st.markdown(f"{transform_unit_for_area} square {unit} of your image are covered with cells.")
-            else:
-                st.markdown(f"{cell_area} square pixel of your image are covered with cells.", unsafe_allow_html=True)
-    else:
-        st.error("Failed to get a response from the prediction service.")
-
-
-
-####### Calculate real area
-# user input microscope pixel
-# take pixel size from numpy array
-# calculation before print out.
+        else:
+            st.error("Failed to get a response from the prediction service.")
