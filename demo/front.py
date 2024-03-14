@@ -29,7 +29,7 @@ def set_bg_img_from_local(file_path):
     st.markdown(bg_img_style, unsafe_allow_html=True)
 
 # #Use the function with the path to your local JPG image
-set_bg_img_from_local('national-cancer-institute-L7en7Lb-Ovc-unsplash.jpg')
+set_bg_img_from_local('demo/national-cancer-institute-L7en7Lb-Ovc-unsplash.jpg')
 # set_bg_img_from_local('/Users/pepe/code/projects/MorphoMind/demo/national-cancer-institute-L7en7Lb-Ovc-unsplash.jpg')
 
 st.markdown("""
