@@ -129,7 +129,7 @@ st.write('This AI tool allows you to upload TIFF images to determine the cell nu
 
 # choice = st.selectbox('Select what you want to determine:', ['Cell Number', 'Cell Area'])
 
-# files = st.file_uploader('Upload files (.tif)',accept_multiple_files=True)
+files = st.file_uploader('Upload files (.tif)',accept_multiple_files=True)
 
 st.markdown("""
 <style>
@@ -140,50 +140,20 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# if files:
-#     if len(files) == 1:
-#         image = Image.open(files[0])
-#         if st.button("Predict Number of Cells"):
-#             image_np = process_single_image(image)
-#             with st.spinner('Wait for it...'):
-#                 predictions = predict_image_cell_number(image_np)
-#             st.balloons()
-#             st.write(f'<p class="big-font">Predicted Nº of cells: {int(predictions)}</p>' , unsafe_allow_html=True)
-
-#     else:
-#         if st.button("Predict Area"):
-#             img_array = process_multi_images(files)
-#             with st.spinner('Wait for it...'):
-#                 predictions = predict_image_area(img_array)
-#             st.balloons()
-#             st.write(f'<p class="big-font">Predicted Mean Area: {round(float(predictions), 2)} square pixels</p>', unsafe_allow_html=True)
-
-with st.form("prediction_form"):
-    files = st.file_uploader('Upload files (.tif)', accept_multiple_files=True)
-    # Change the button label based on the number of files uploaded
-    if files:
-        if len(files) == 1:
-            submit_button_text = "Predict Number of Cells"
-        else:
-            submit_button_text = "Predict Area"
-    else:
-        submit_button_text = "Upload files to enable prediction"
-
-    submit_button = st.form_submit_button(submit_button_text)
-
-if submit_button and files:
+if files:
     if len(files) == 1:
-        # Process single file and predict number of cells
         image = Image.open(files[0])
-        image_np = process_single_image(image)
-        with st.spinner('Wait for it...'):
-            predictions = predict_image_cell_number(image_np)
-        st.balloons()
-        st.markdown(f'<p class="big-font">Predicted Nº of cells: {int(predictions)}</p>', unsafe_allow_html=True)
+        if st.button("Predict Number of Cells"):
+            image_np = process_single_image(image)
+            with st.spinner('Wait for it...'):
+                predictions = predict_image_cell_number(image_np)
+            st.balloons()
+            st.write(f'<p class="big-font">Predicted Nº of cells: {int(predictions)}</p>' , unsafe_allow_html=True)
+
     else:
-        # Process multiple files and predict area
-        img_array = process_multi_images(files)
-        with st.spinner('Wait for it...'):
-            predictions = predict_image_area(img_array)
-        st.balloons()
-        st.markdown(f'<p class="big-font">Predicted Mean Area: {round(float(predictions), 2)} square pixels</p>', unsafe_allow_html=True)
+        if st.button("Predict Area"):
+            img_array = process_multi_images(files)
+            with st.spinner('Wait for it...'):
+                predictions = predict_image_area(img_array)
+            st.balloons()
+            st.write(f'<p class="big-font">Predicted Mean Area: {round(float(predictions), 2)} square pixels</p>', unsafe_allow_html=True)
