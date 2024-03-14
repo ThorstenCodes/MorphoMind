@@ -56,7 +56,7 @@ h2, h3, h4, h5, h6, p {
     background-color: #f0f2f6; /* Background color */
     color: black; /* Text color */
 }
-.stButton > div > label {
+.stButton p {
     color: black; /* Text color */
 }
 
