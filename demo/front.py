@@ -4,6 +4,7 @@ import requests
 from PIL import Image
 import base64
 import time
+import matplotlib.pyplot as plt
 
 
 st.set_page_config(page_title='Morpho Minds',
@@ -147,6 +148,12 @@ st.markdown("""
 if files:
     if len(files) == 1:
         image = Image.open(files[0])
+
+        fig, ax = plt.subplots()
+        ax.imshow(image, cmap='gray')
+        ax.axis('off')  # Hide the axis
+        st.pyplot(fig)
+
         if st.button("Predict Number of Cells"):
             image_np = process_single_image(image)
             with st.spinner('Wait for it...'):
