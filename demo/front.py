@@ -129,7 +129,7 @@ def transform_unit_for_area(image_array, width, height):
 
 st.title("Morpho Minds")
 
-st.write('This AI tool allows you to upload TIFF images to determine the cell number or cell area on the image. The cell number and area are predicted by Deep Learning Models which have been trained on the xxx dataset. Have fun predicting from your pictures.')
+st.write('This AI tool allows you to upload TIFF images to determine the cell number or cell area on the image. The cell number and area are predicted by Deep Learning Models which have been trained on the Broad Bioimage Benchmark Collection (BBBC047 dataset). Have fun analyzing your images!')
 
 # choice = st.selectbox('Select what you want to determine:', ['Cell Number', 'Cell Area'])
 
